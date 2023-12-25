@@ -1,0 +1,21 @@
+#ifndef DEF_PLATEAU
+#define DEF_PLATEAU
+
+#include <vector>
+#include <utility>
+#include "piece.hpp"
+
+using namespace std;
+
+class Plateau {
+public:
+	Plateau(int larg, int long); //Const
+	bool deplacer(int x_actuel, int y_actuel, int x_new, int y_new);
+	void prendre(int x, int y);
+	bool mouv_possible(int x_actuel, int y_actuel, int x_new, int y_new);
+	vector <pair<int,int>> ens_des_mouv (int x, int y)
+
+private:
+	vector <int> m_plateau; //plateau en 2D
+	int m_larg, m_long; //dimension du plateau
+};
