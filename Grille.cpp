@@ -35,7 +35,7 @@ Pion* Grille::retirer(int x, int y)
 }
 Pion* Grille::peut_sauter(int x , int y,int nx,int ny)
 {
-	/* Dans cette fonction on verifie si la pos (nx,ny) qu'on veut aller est dans l'ensemble des deplacemt possi depuis la pos (x,y) si oui et que la case sauter est libre on renvoie cette case sinon on renvoie nullptr*/
+	/* Dans cette fonction on verifie si la pos (nx,ny) qu'on veut aller est dans l'ensemble des deplacemt possi depuis la pos (x,y) si oui et que la case sauter n'est pas vide on renvoie cette case sinon on renvoie nullptr*/
 	if((*gcase[nx])[ny] != nullptr)return nullptr;
 	
 	if(x == nx && y==ny-2 && (*gcase[x])[y+1] != nullptr)return (*gcase[x])[y+1];
