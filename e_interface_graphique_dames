@@ -1,0 +1,54 @@
+//Version sans les jetons
+#include <SFML/Graphics.hpp>
+
+int main()
+{
+    sf::RenderWindow window(sf::VideoMode(800, 800), "Jeu de Dames");
+
+    // Taille d'une case du damier
+    const int tailleCase = 800 / 10;
+
+    // Continuez à exécuter tant que la fenêtre est ouverte
+    while (window.isOpen())
+    {
+        // Gérer les événements
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        // Effacez l'écran
+        window.clear(sf::Color::White);
+
+        sf::Color customLightColor(236, 183, 131, 255); // Couleur claire
+        sf::Color customDarkColor(92, 39, 14, 255);     // Couleur foncée
+
+        // Dessinez le damier
+        for (int i = 0; i < 10; ++i)
+        {
+            for (int j = 0; j < 10; ++j)
+            {
+                // Créer une case
+                sf::RectangleShape caseDamier(sf::Vector2f(tailleCase, tailleCase));
+                caseDamier.setPosition(j * tailleCase, i * tailleCase);
+
+                // Colorer la case en alternance avec les couleurs personnalisées
+                if ((i + j) % 2 == 0)
+                    caseDamier.setFillColor(customLightColor); // Utilisation de la couleur claire
+                else
+                    caseDamier.setFillColor(customDarkColor);  // Utilisation de la couleur foncée
+
+                // Dessinez la case
+                window.draw(caseDamier);
+            }
+        }
+
+
+        // Afficher ce qui a été dessiné
+        window.display();
+    }
+
+    return 0;
+}
