@@ -9,7 +9,7 @@ Plateau::Plateau(int lignes, int colonnes) : m_lignes(lignes), m_colonnes(colonn
 {
 	//On initialise un tableau Lxl avec des pointeurs nuls partout (pr l'instant)
 	m_plateau = vector <vector<Piece*>>(lignes, vector <Piece*>(colonnes, nullptr));
-    //On place les piËces sur le plateau grace ‡ une fct placer_piece
+    //On place les pi√®ces sur le plateau grace √† une fct placer_piece
     //placerPiece();
 }
 
@@ -17,7 +17,7 @@ Plateau::Plateau(int lignes, int colonnes) : m_lignes(lignes), m_colonnes(colonn
 /*
 void Plateau::placerPiece()
 {
-    for (int l = 0; l < 4; l++) { // On place les piËces noirs
+    for (int l = 0; l < 4; l++) { // On place les pi√®ces noirs
         for (int c = 0; c < m_colonnes; c++) {
             if ((l + c) % 2 == 1) { // seulement sur les cases noires
                 m_plateau[l][c] = new Piece(l, c, "NOIR", false);
@@ -25,7 +25,7 @@ void Plateau::placerPiece()
         }
     }
     
-    for (int l = m_lignes -1; l > m_lignes - 5; l--) { // Puis les piËces blanches
+    for (int l = m_lignes -1; l > m_lignes - 5; l--) { // Puis les pi√®ces blanches
         for (int c = 0; c < m_colonnes; c++) {
             if ((l + c) % 2 == 1) { 
                 m_plateau[l][c] = new Piece(l, c, "BLANC", false);
@@ -42,8 +42,8 @@ Plateau::~Plateau() {
         for (int j = 0; j < m_colonnes; j++) {
             if (m_plateau[i][j] != nullptr)
             { 
-                delete m_plateau[i][j];  // LibËre la mÈmoire de chaque piËce
-                m_plateau[i][j] = nullptr;  // Assurez-vous de mettre le pointeur ‡ nullptr aprËs la suppression
+                delete m_plateau[i][j];  // Lib√®re la m√©moire de chaque pi√®ce
+                m_plateau[i][j] = nullptr;  // Assurez-vous de mettre le pointeur √† nullptr apr√®s la suppression
             }
             
         }
@@ -58,7 +58,7 @@ void Plateau::afficherPlat()
                 cout << "- ";  // Case vide
             }
             else {
-                cout << m_plateau[i][j]->mat();  // Affiche un symbole reprÈsentant la piËce avc methode mat
+                cout << m_plateau[i][j]->mat();  // Affiche un symbole repr√©sentant la pi√®ce avc methode mat
             }
         }
         cout << endl;
@@ -66,9 +66,9 @@ void Plateau::afficherPlat()
 }
 
 void Plateau::ajouterPiece(int x, int y, string couleur, bool estDame) {
-    //On vÈrifie la position
+    //On v√©rifie la position
     if (x >= 0 && x< m_lignes && y>= 0 && y< m_colonnes && m_plateau[x][y] == nullptr) {
-        m_plateau[x][y] = new Piece(x, y, couleur, estDame); //On crÈe une piece et on la place sur le plateau, on rpl que m_plateau est de type Piece*
+        m_plateau[x][y] = new Piece(x, y, couleur, estDame); //On cr√©e une piece et on la place sur le plateau, on rpl que m_plateau est de type Piece*
     }
     else {
         cout << "Erreur" << endl;
@@ -82,7 +82,7 @@ void Plateau::deplacer(int x_act, int y_act, int x_new, int y_new)
         Piece* pieceA = m_plateau[x_act][y_act];
 
         m_plateau[x_new][y_new] = pieceA;
-        m_plateau[x_act][y_act] = nullptr; //Est-ce utile de MAJ la position de la piËces ? 
+        m_plateau[x_act][y_act] = nullptr; //Est-ce utile de MAJ la position de la pi√®ces ? 
     }
     else
     {
@@ -92,23 +92,23 @@ void Plateau::deplacer(int x_act, int y_act, int x_new, int y_new)
 
 bool Plateau::mouvPossible(int x_act, int y_act, int x_new, int y_new)
 {
-    //1. VÈrification limites du plateau
+    //1. V√©rification limites du plateau
     if (x_act < 0 || x_act >= m_lignes || y_act < 0 || y_act >= m_colonnes
         || x_new < 0 || x_new >= m_lignes || y_new < 0 || y_new >= m_colonnes)
     {    return false; }
 
-    //2. On vÈrifie qu'on ‡ bien une piËce ‡ dÈplacer
+    //2. On v√©rifie qu'on √† bien une pi√®ce √† d√©placer
     if (m_plateau[x_act][y_act] == nullptr)
     {    return false;}
 
-    //3.On vÈrifie que la case de destination est vide : 
+    //3.On v√©rifie que la case de destination est vide : 
     if (m_plateau[x_new][y_new] != nullptr)
     {  return false;}
 
-    //4. On rÈcupËre le pointeur de la piece qu'on veut dÈplacer
+    //4. On r√©cup√®re le pointeur de la piece qu'on veut d√©placer
     Piece* pieceA = m_plateau[x_act][y_act];
     
-    //5. On stock la couleur de la piËce et la direction de dÈplacement 
+    //5. On stock la couleur de la pi√®ce et la direction de d√©placement 
     string couleurA = pieceA->m_couleur;
 
     int dx = x_act - x_new;
@@ -144,8 +144,8 @@ bool Plateau::mouvPossible(int x_act, int y_act, int x_new, int y_new)
     else if (!pieceA->m_dame && couleurA == "BLANC")
     {
         //Deplacement SANS prise 
-        if (dx == 1 && dy == -1) { return true; } //Deplacement ‡ droite en haut (piece blanche)
-        else if (dx == 1 && dy == 1) { return true; } //‡ gauche en haut (piece blanche)
+        if (dx == 1 && dy == -1) { return true; } //Deplacement √† droite en haut (piece blanche)
+        else if (dx == 1 && dy == 1) { return true; } //√† gauche en haut (piece blanche)
 
         //Deplacement AVEC prise 
         else if (dx == 2 && dy == 2) //haut gauche (blanc)
@@ -175,8 +175,8 @@ bool Plateau::mouvPossible(int x_act, int y_act, int x_new, int y_new)
     else if (!pieceA->m_dame && couleurA == "NOIR")
     {
         //Deplacement SANS prise
-        if (dx == -1 && dy == -1) { return true; } //deplacement en bas ‡ droite (piece noir)
-        else if (dx == -1 && dy == 1) { return true; }//deplcmtn en bas ‡ gauche (piece noir)
+        if (dx == -1 && dy == -1) { return true; } //deplacement en bas √† droite (piece noir)
+        else if (dx == -1 && dy == 1) { return true; }//deplcmtn en bas √† gauche (piece noir)
 
         //Deplacement AVEC prise 
         else if (dx == -2 && dy == -2) //bas droite (noir)
@@ -204,7 +204,7 @@ bool Plateau::mouvPossible(int x_act, int y_act, int x_new, int y_new)
 
 bool Plateau::prisePossiblePion(int x_int, int y_int, string couleurPiece)
 {
-    if (m_plateau[x_int][y_int] != nullptr && m_plateau[x_int][y_int]->m_couleur != couleurPiece) //On a une piece ET de couleurs diffÈrentes
+    if (m_plateau[x_int][y_int] != nullptr && m_plateau[x_int][y_int]->m_couleur != couleurPiece) //On a une piece ET de couleurs diff√©rentes
     {
         return true;
     }
@@ -216,7 +216,7 @@ bool Plateau::prisePossiblePion(int x_int, int y_int, string couleurPiece)
 
 bool Plateau::priseDame(int x_act, int y_act, int x_new, int y_new, std::string couleurPiece)
 {
-    //VÈrifie si diag_libre avant la piece
+    //V√©rifie si diag_libre avant la piece
     return true;
 }
 
@@ -227,7 +227,7 @@ bool Plateau::diagLibre(int x_act, int y_act, int x_new, int y_new)
 
     if (dx > 0 && dy > 0) //Deplcmt haut gauche
     {
-        for (int i = 1; i < abs(dx); i++) //i ne va pas jusqu'‡ x_new mais jusqu'a |dx| ! De plus i vÈrifie seulement les cases avant (x_new,y_new) et pas la case (x_new, y_new dÈj‡ vÈrifiÈ avant)
+        for (int i = 1; i < abs(dx); i++) //i ne va pas jusqu'√† x_new mais jusqu'a |dx| ! De plus i v√©rifie seulement les cases avant (x_new,y_new) et pas la case (x_new, y_new d√©j√† v√©rifi√© avant)
         {
             if (m_plateau[x_act-i][y_act-i] != nullptr)
             {
@@ -276,14 +276,14 @@ bool Plateau::diagLibre(int x_act, int y_act, int x_new, int y_new)
     else { return false; }
 }
 
-void Plateau::prendrePion(int x_int, int y_int) //Prend une position en paramËtre, delete la piece associÈ, et met la case en nullptr
+void Plateau::prendrePion(int x_int, int y_int) //Prend une position en param√®tre, delete la piece associ√©, et met la case en nullptr
 {
     if (m_plateau[x_int][y_int] != nullptr)
     {
-        delete m_plateau[x_int][y_int];  // LibËre la mÈmoire de la piËce
+        delete m_plateau[x_int][y_int];  // Lib√®re la m√©moire de la pi√®ce
         m_plateau[x_int][y_int] = nullptr;
     }
     else {
-        cout << "Prise impossible, pas de piËces prÈsentes" << endl;
+        cout << "Prise impossible, pas de pi√®ces pr√©sentes" << endl;
     }
 }
