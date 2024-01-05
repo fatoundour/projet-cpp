@@ -2,22 +2,22 @@
 #define DEF_PIECE
 
 #include <string>
-#include <utility> // pour le vecteur pair
-
-using namespace std;
+#include <utility>
 
 class Piece {
 	friend class Plateau;
 
 public:
-	Piece(int x, int y, string color, bool Dame = 0); //Constructeur
-	void move(int newX, int newY); //Methode pour se déplacer
-
+	Piece(int x, int y, std::string color, bool Dame = 0); //Const
+	void afficher(); //A ENLEVER
+	std::string mat(); //A ENLEVER
+	~Piece(); //Dest
 
 private:
-	pair <int, int> m_position; //position de la pièces
-	string m_couleur; //couleur de la pièce, blanc/noir
-	bool m_Dame; //Vrai si on a une dame
+	std::pair <int, int> m_position; //Position de la piece
+	std::string m_couleur; // BLANC ou NOIR
+	bool m_dame; //V si Dame
+
 };
 
 #endif
