@@ -1,369 +1,289 @@
 #include "Plateau.hpp"
 #include "Piece.hpp"
 
-Plateau::Plateau(int largeur, int longueur): m_largeur(largeur), m_longueur(longueur)
+#include <iostream>
+
+using namespace std;
+
+Plateau::Plateau(int lignes, int colonnes) : m_lignes(lignes), m_colonnes(colonnes)
 {
 	//On initialise un tableau Lxl avec des pointeurs nuls partout (pr l'instant)
-	m_plateau = vector<vector<Piece*>>(largeur, vector<Piece*>(longueur, nullptr));
-	//On place les pièces sur le plateau grace à une fct placer_piece
-	placer_piece();
+	m_plateau = vector <vector<Piece*>>(lignes, vector <Piece*>(colonnes, nullptr));
+    //On place les pièces sur le plateau grace à une fct placer_piece
+    //placerPiece();
 }
 
-void Plateau::placer_piece()
+//METHODE PLACER PIECE 
+/*
+void Plateau::placerPiece()
 {
-	//Pour les piéces blanches 
-	for (int i = 0; i < 3; i++) //On les places sur les 4 premières lignes
-	{
-		for (int j = (i % 2); j < m_largeur; j += 2) //On alterne piece/case vide
-		{
-			m_plateau[j][i] = new Piece(j, i, "blanc", 0);
-		}
-	}
+    for (int l = 0; l < 4; l++) { // On place les pièces noirs
+        for (int c = 0; c < m_colonnes; c++) {
+            if ((l + c) % 2 == 1) { // seulement sur les cases noires
+                m_plateau[l][c] = new Piece(l, c, "NOIR", false);
+            }
+        }
+    }
+    
+    for (int l = m_lignes -1; l > m_lignes - 5; l--) { // Puis les pièces blanches
+        for (int c = 0; c < m_colonnes; c++) {
+            if ((l + c) % 2 == 1) { 
+                m_plateau[l][c] = new Piece(l, c, "BLANC", false);
+            }
+        }
+    }
+}
+*/
 
-	//Pour les piéces noirs, pareil mais on place en haut du plateau
-	for (int i = m_longueur - 3; i < m_longueur; i++)
-	{
-		for (int j = ((i + 1) % 2); j < m_largeur; j+= 2)
-		{
-			m_plateau[j][i] = new Piece(j, i, "noir", 0); //PENSER  A GERER LE DESTRUCTEUR
-		}
-	}
+
+
+Plateau::~Plateau() {
+    for (int i = 0; i < m_lignes; i++) {
+        for (int j = 0; j < m_colonnes; j++) {
+            if (m_plateau[i][j] != nullptr)
+            { 
+                delete m_plateau[i][j];  // Libère la mémoire de chaque pièce
+                m_plateau[i][j] = nullptr;  // Assurez-vous de mettre le pointeur à nullptr après la suppression
+            }
+            
+        }
+    }
 }
 
-//Deplacer
-/*bool Plateau::deplacer(int x_actuel, int y_actuel, int x_new, int y_new)
+void Plateau::afficherPlat()
 {
-	if (!mouv_possible(x_actuel, y_actuel, x_new, y_new)) //On vérif si le depl est autorisé
-	{
-		return false; //refuse si pas possibole
-	}
-	else
-	{
-		return true;
-		//Voir si on peut prendre ou pas
-	}
-
-	//On vérif si on a une promotion possible
-	if (promo_possible (x_new,y_new))
-	{
-		m_plateau[y_new][x_new]->m_Dame = true;
-	}
-
-} */
-
-//Prend une case en entrée et vérif si il y a une piece sur cette case et que
-bool Plateau::promo_possible(int x_new, int y_new)
-{
-	Piece* piece = m_plateau[y_new][x_new];
-	if (piece && piece->m_Dame != true) //On vérif que ce n'est pas une dame et qu'on à bien une piece, if(piece) verifie que le pointeur est non nul 
-	{
-		if (piece->m_couleur == "blanc" && y_new == m_longueur - 1)
-		{
-			return true;
-		}
-		else if (piece->m_couleur == "noir" && y_new == 0)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	else 
-	{
-		return false;
-	}
+    for (int i = 0; i < m_lignes; i++) {
+        for (int j = 0; j < m_colonnes; j++) {
+            if (m_plateau[i][j] == nullptr) {
+                cout << "- ";  // Case vide
+            }
+            else {
+                cout << m_plateau[i][j]->mat();  // Affiche un symbole représentant la pièce avc methode mat
+            }
+        }
+        cout << endl;
+    }
 }
 
-void Plateau::prendre(int x, int y)
-{
-
+void Plateau::ajouterPiece(int x, int y, string couleur, bool estDame) {
+    //On vérifie la position
+    if (x >= 0 && x< m_lignes && y>= 0 && y< m_colonnes && m_plateau[x][y] == nullptr) {
+        m_plateau[x][y] = new Piece(x, y, couleur, estDame); //On crée une piece et on la place sur le plateau, on rpl que m_plateau est de type Piece*
+    }
+    else {
+        cout << "Erreur" << endl;
+    }
 }
 
-bool Plateau::mouv_possible(int x_actuel, int y_actuel, int x_new, int y_new)
+void Plateau::deplacer(int x_act, int y_act, int x_new, int y_new)
 {
-	//On vérifie les limites du plateau
-	if (x_actuel < 0 || x_actuel >= m_largeur || y_actuel < 0 || y_actuel >= m_longueur 
-		|| x_new < 0 || x_new >= m_largeur || y_new < 0 || y_new >= m_longueur)
-	{
-		return false;
-	}
+    if (mouvPossible(x_act, y_act, x_new, y_new))
+    {
+        Piece* pieceA = m_plateau[x_act][y_act];
 
-	//On vérif qu'on a bien une piece à déplacer
-	if (m_plateau[y_actuel][x_actuel] == nullptr)
-	{
-		return false;
-	}
-
-	//Si on a une piece on l'associe à la case correspondantes
-	Piece* piece = m_plateau[y_actuel][x_actuel];
-
-	//Vérif que la case de destination est vide :
-	if (m_plateau[y_new][x_new] != nullptr)
-	{
-		return false;
-	}
-
-	 //On stock la couleur et la direction de déplacement
-	string couleur = piece->m_couleur;
-	int dx = x_actuel - x_new;
-	int dy = y_actuel - y_new;
-
-
-	
-	//Distinction des cas si on à une dame ou pas
-	if (piece->m_Dame)
-	{
-		//Distinguer si on a une piece noir / blanche 
-		if (diag_libre (x_actuel, y_actuel, x_new, y_new))
-		{
-			return true;
-		}
-
-		else 
-		{
-			return false;
-		}
-		//Ajouter le cas ou une prise possible
-
-	}
-	else
-	{
-		//Cas piece blanche
-		if (piece->m_couleur == "blanc")
-		{
-			//Cas piece haut, droite
-			if (dx == 1 && dy == -1) //Pas besoin de vérif que la case est vide on a vérif précedemnt
-			{
-				return true;
-			}
-			//piece haut, gauche 
-			else if (dx == -1 && dy == -1)
-			{
-				return true;
-			}
-			else if (prise_possible(x_actuel, y_actuel, x_new, y_new)) //Si on est ps dans les diag adj, alors regarde si il y a une prise possible, si c'est le cas on prend
-			{//Attention à l'arg, mettre la couleur ds prise possible
-				prendre(x_new, y_new); 
-				return true;
-			}
-
-			else
-			{
-				return false;
-			}
-		}
-
-		//Cas Piece noir
-		else
-		{
-			//Cas piece bas, gauche
-			if (dx == -1 && dy == 1) //Pas besoin de vérif que la case est vide on a vérif précedemnt
-			{
-				return true;
-			}
-			//piece bas, droite 
-			else if (dx == 1 && dy == 1)
-			{
-				return true;
-			}
-			else if (prise_possible(x_actuel, y_actuel, x_new, y_new)) //Si on est ps dans les diag adj, alors regarde si il y a une prise possible, si c'est le cas on prend
-			{//Attention à l'arg, mettre la couleur ds prise possible
-				prendre(x_new, y_new);
-				return true;
-			}
-
-			else
-			{
-				return false;
-			}
-		}
-	}
+        m_plateau[x_new][y_new] = pieceA;
+        m_plateau[x_act][y_act] = nullptr; //Est-ce utile de MAJ la position de la pièces ? 
+    }
+    else
+    {
+        cout << "Mouvement impossible" << endl;
+    }
 }
 
-bool Plateau::diag_libre(int x_act, int y_act, int x_new, int y_new)
+bool Plateau::mouvPossible(int x_act, int y_act, int x_new, int y_new)
 {
-	int dx = x_act - x_new;
-	int dy = y_act - y_new;
-	if (dx < 0) { dx = -1; }
-	else if (dx > 0) { dx = 1; }
-	else { return false; } //Eviter le cas ligne droite avant
-	if (dy < 0) { dy = -1; }
-	else if (dy > 0) { dy = 1; }
-	else { return false; }
+    //1. Vérification limites du plateau
+    if (x_act < 0 || x_act >= m_lignes || y_act < 0 || y_act >= m_colonnes
+        || x_new < 0 || x_new >= m_lignes || y_new < 0 || y_new >= m_colonnes)
+    {    return false; }
 
-	int x = x_act + dx;
-	int y = y_act + dy;
+    //2. On vérifie qu'on à bien une pièce à déplacer
+    if (m_plateau[x_act][y_act] == nullptr)
+    {    return false;}
 
-	while (x != x_new && y != y_new) {
-		if (m_plateau[y][x] != nullptr)
-		{
-			return false;
-		}
-		x += dx;
-		y += dy;
-	}
+    //3.On vérifie que la case de destination est vide : 
+    if (m_plateau[x_new][y_new] != nullptr)
+    {  return false;}
 
-	return true;
+    //4. On récupère le pointeur de la piece qu'on veut déplacer
+    Piece* pieceA = m_plateau[x_act][y_act];
+    
+    //5. On stock la couleur de la pièce et la direction de déplacement 
+    string couleurA = pieceA->m_couleur;
 
-	//Diag_libre mais marche pas
-	/*
-	if (dx < 0 && dy <0) //Déplct vers la droite en haut
-	{
-		for (int i = x_act; i <= x_new; i++)
-		{
-			if (m_plateau[y_act + i][x_act + i] != nullptr) { return false; }
-		}
-		return true;
-	}
+    int dx = x_act - x_new;
+    int dy = y_act - y_new;
+    int x_int = (x_act + x_new) / 2; //Pour la prise des pions
+    int y_int = (y_act + y_new) / 2;
 
-	else if (dx > 0) //Déplc vers la gauche 
-	{
-		for (int i = x_act; i >= x_new; i--)
-		{
-			if (m_plateau[y_act + i][x_act - i] != nullptr) { return false; }
-		}
-		return true;
-	}
-	else if (dx == 0 || dy == 0)
-	{
-		return false;
-	}
-} */
+    //6. Cas des Dames  :
+    if (pieceA->m_dame)
+    {
+        //Cas dame blanche
+        if (pieceA->m_couleur == "BLANC")
+        {
+            if (diagLibre(x_act, y_act, x_new, y_new))
+            {
+                return true;
+            }
+            else
+            {
+                if (priseDame(x_act, y_act, x_new, y_new,  "BLANC"))
+                {
+                    return true;
+                }
+            }
+        }
+        //return false;
+    }
 
+    //7. Cas des pions 
 
-bool Plateau::prise_possible(int x_actuel, int y_actuel, int x_new, int y_new) //peut etre ajouter la couleur en argument
-{
-	//On vérifie les limites du plateau
-	if (x_actuel < 0 || x_actuel >= m_largeur || y_actuel < 0 || y_actuel >= m_longueur
-		|| x_new < 0 || x_new >= m_largeur || y_new < 0 || y_new >= m_longueur)
-	{
-		return false;
-	}
+    //Pour les BLANCS
 
-	//On vérif qu'on a bien une piece à déplacer
-	if (m_plateau[y_actuel][x_actuel] == nullptr)
-	{
-		return false;
-	}
+    else if (!pieceA->m_dame && couleurA == "BLANC")
+    {
+        //Deplacement SANS prise 
+        if (dx == 1 && dy == -1) { return true; } //Deplacement à droite en haut (piece blanche)
+        else if (dx == 1 && dy == 1) { return true; } //à gauche en haut (piece blanche)
 
-	//Si on a une piece on l'associe à la case correspondantes
-	Piece* piece = m_plateau[y_actuel][x_actuel];
+        //Deplacement AVEC prise 
+        else if (dx == 2 && dy == 2) //haut gauche (blanc)
+        {
+            if (prisePossiblePion(x_int, y_int, "BLANC"))
+            {
+                prendrePion(x_int, y_int);
+                return true;
+            }
+            else { return false; }
+                  
+        }
+        else if (dx == 2 && dy == -2) //haut droite (blanc)
+        {
+            if (prisePossiblePion(x_int, y_int, "BLANC"))
+            {
+                prendrePion(x_int, y_int);
+                return true;
+            }
+            else { return false; }
+        }
 
-	//On récupère la couleur de la pièce : 
-	string couleur_piece = piece->m_couleur;
-	//On récupère les directions de la piece
-	int dx = x_actuel - x_new;
-	int dy = y_actuel - y_new;
+        else { return false; }
+    }
 
+    //Pour les NOIRS 
+    else if (!pieceA->m_dame && couleurA == "NOIR")
+    {
+        //Deplacement SANS prise
+        if (dx == -1 && dy == -1) { return true; } //deplacement en bas à droite (piece noir)
+        else if (dx == -1 && dy == 1) { return true; }//deplcmtn en bas à gauche (piece noir)
 
-	//Vérif que il y a une piece adverse entre la case de destination et la case actuel : // A FAIRE
-	if (m_plateau[y_new][x_new] == nullptr || m_plateau[y_new][x_new]->m_couleur == couleur_piece)
-	{
-		return false;
-	}
-
-
-	// Distinction des cas si on à une dame ou pas
-	if (piece->m_Dame)
-	{
-		if (dx < 0 && dy > 0) //Prise en bas, à droite
-		{
-			if (diag_libre(x_actuel, y_actuel, x_new - 1, y_new + 1) && m_plateau[y_new - 1][x_new + 1] == nullptr)
-			{
-				return true;
-			}
-
-		}
-
-		else if (dx > 0 && dy < 0) //Prise en bas, à gauche
-		{
-			if (diag_libre(x_actuel, y_actuel, x_new + 1, y_new + 1) && m_plateau[y_new - 1][x_new - 1] == nullptr)
-			{
-				return true;
-			}
-		}
-
-		else if (dx < 0 && dy < 0) //Prise en haut à gauche
-		{
-			if (diag_libre(x_actuel, y_actuel, x_new - 1, y_new - 1) && m_plateau[y_new + 1][x_new + 1] == nullptr)
-			{
-				return true;
-			}
-		}
-
-		else if (dx > 0 && dy > 0) //Prise en haut, à droite 
-		{
-			if (diag_libre(x_actuel, y_actuel, x_new - 1, y_new - 1) && m_plateau[y_new + 1][x_new + 1] == nullptr)
-			{
-				return true;
-			}
-		}
-
-		else //Tester si pas d'autres cas
-		{
-			return false;
-		}
-	}
-
-	//CAS PION
-	else 
-	{
-		if (piece->m_couleur == "blanc")
-		{
-			if (dx == 0) //La case n'est pas en diagonale 
-			{
-				return false;
-			} //Rajouter les y
-
-			else if (dx < 0 && dy > 0 //On est dans une position devant, et à droite
-				&& m_plateau[y_actuel +1][x_actuel +1] != nullptr  //Si il y a une piece en face
-				&& m_plateau[y_actuel + 1][x_actuel + 1]->m_couleur != couleur_piece //Et quelle est de couleurs différentes 
-				&& m_plateau[y_new][x_new] == nullptr) //Et que la case d'après est vide	
-			{
-				return true;
-			}
-
-			else if (dx > 0 && dy>0
-				&& m_plateau[y_actuel + 1][x_actuel - 1] != nullptr 
-				&& m_plateau[y_actuel + 1][x_actuel - 1]->m_couleur != couleur_piece
-				&& m_plateau[y_new][x_actuel]->m_couleur != couleur_piece)
-			{
-				return true;
-			}
-
-			else
-			{
-				return false;
-			}
-		}
-
-		else //Cas piece noir
-		{
-
-		}
-		
-		//On différencie les cas si on a une piece blanche 
-		//Cas 1 : (x_new,y_new) est une case diag a à une dist exactmnt 2 : 
-			//si on a une piece adverse entre (x_act, y_act) et que la case (x_new, y_new) est libre, on peut prendre 
-			// sinon pas possible
-		if (dx )
-	
-		if (m_plateau[y_new + 1][x_new + 1] == nullptr) //Probleme, ne marche que si on veut prendre à droite
-		{
-			return true;
-		}
-		//Cas 2: Sinon on renvoie faux.
-
-	}
-
-
-
+        //Deplacement AVEC prise 
+        else if (dx == -2 && dy == -2) //bas droite (noir)
+        {
+            if (prisePossiblePion(x_int, y_int, "NOIR"))
+            {
+                prendrePion(x_int, y_int);
+                return true;
+            }
+            else { return false; }
+        }
+        else if (dx == -2 && dy == 2)
+        {
+            if (prisePossiblePion(x_int, y_int, "NOIR"))
+            {
+                prendrePion(x_int, y_int);
+                return true;
+            }
+            else { return false; }
+        }
+        else { return false; }
+    }
+   
 }
 
-/*vector <pair<int, int>> Plateau::ens_des_mouv(int x, int y)
+bool Plateau::prisePossiblePion(int x_int, int y_int, string couleurPiece)
 {
-	return <<x, y>>;
-} */
+    if (m_plateau[x_int][y_int] != nullptr && m_plateau[x_int][y_int]->m_couleur != couleurPiece) //On a une piece ET de couleurs différentes
+    {
+        return true;
+    }
+    else 
+    {
+        return false;
+    }
+}
 
+bool Plateau::priseDame(int x_act, int y_act, int x_new, int y_new, std::string couleurPiece)
+{
+    //Vérifie si diag_libre avant la piece
+    return true;
+}
+
+bool Plateau::diagLibre(int x_act, int y_act, int x_new, int y_new)
+{
+    int dx = x_act - x_new;
+    int dy = y_act - y_new;
+
+    if (dx > 0 && dy > 0) //Deplcmt haut gauche
+    {
+        for (int i = 1; i < abs(dx); i++) //i ne va pas jusqu'à x_new mais jusqu'a |dx| ! De plus i vérifie seulement les cases avant (x_new,y_new) et pas la case (x_new, y_new déjà vérifié avant)
+        {
+            if (m_plateau[x_act-i][y_act-i] != nullptr)
+            {
+                return false;
+            }
+        }
+        return true; //La diag est vide
+    }
+
+    else if (dx > 0 && dy<0) //haut droit
+    {
+        for (int i = 1; i < abs(dx); i++) 
+        {
+            if (m_plateau[x_act - i][y_act + i] != nullptr)
+            {
+                return false;
+            }
+        }
+        return true; //La diag est vide
+    }
+
+    else if (dx < 0 && dy >0) //bas gauche
+    {
+        for (int i = 1; i < abs(dx); i++)
+        {
+            if (m_plateau[x_act + i][y_act - i] != nullptr)
+            {
+                return false;
+            }
+        }
+        return true; //La diag est vide
+    }
+
+    else if (dx < 0 && dy < 0) //bas droit
+    {
+        for (int i = 1; i < abs(dx); i++)
+        {
+            if (m_plateau[x_act + i][y_act + i] != nullptr)
+            {
+                return false;
+            }
+        }
+        return true; //La diag est vide
+    }
+
+    else { return false; }
+}
+
+void Plateau::prendrePion(int x_int, int y_int) //Prend une position en paramètre, delete la piece associé, et met la case en nullptr
+{
+    if (m_plateau[x_int][y_int] != nullptr)
+    {
+        delete m_plateau[x_int][y_int];  // Libère la mémoire de la pièce
+        m_plateau[x_int][y_int] = nullptr;
+    }
+    else {
+        cout << "Prise impossible, pas de pièces présentes" << endl;
+    }
+}
