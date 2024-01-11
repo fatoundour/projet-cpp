@@ -1,36 +1,36 @@
 #include<iostream>
-#include"Joueur.hpp"
-#include"Pion.hpp"
-#include"Grille.hpp"
+#include"f_Joueur.hpp"
+#include"f_Pion.hpp"
+#include"f_Plateau.hpp"
 #include<vector>
 #include<string>
 
 using namespace std;
 
-Joueur::Joueur(const string n, int s):nom{n},score{s}
+Joueur::Joueur(const string n, int s):m_nom{n},m_score{s}
 {
 	a_le_tour = false;
-	pion_capturer= vector<Pion*>(64,nullptr);
+	m_pionCapturer= vector<Pion*>(64,nullptr);
 }; 
 
 Joueur::~Joueur()
 {
-	for(Pion *e: pion_capturer) 
+	for(Pion *e: m_pionCapturer) 
 	{ 
 	   e = nullptr;
 	   delete e;
 	}
 }
 
-const string Joueur::get_nom()const{return nom;}
+const string Joueur::get_m_nom()const{return m_nom;}
 
-int Joueur::get_score()const{return score;}
+int Joueur::get_m_score()const{return m_score;}
 
-vector<Pion*> Joueur::get_pion_capturer()const{return pion_capturer;}
+vector<Pion*> Joueur::get_m_pionCapturer()const{return m_pionCapturer;}
 
-bool Joueur::retirer_pion_jaune(int x,int y,Grille& G)
+bool Joueur::retirerPionJaune(int x,int y,Plateau& G)
 {
-	if(a_le_tour && G.get_gcase()[x][y] != nullptr && G.get_gcase()[x][y]->get_couleur() == "Yellow")
+	if(a_le_tour && G.get_m_plateau()[x][y] != nullptr && G.get_m_plateau()[x][y]->get_m_couleur() == "Yellow")
 	{
 		G.retirer(x,y);
 		return true;
@@ -38,28 +38,28 @@ bool Joueur::retirer_pion_jaune(int x,int y,Grille& G)
 	return false;
 }
 
-bool Joueur::choisir_pion_jaune(int x,int y,Grille& G)
+bool Joueur::choisirPionJaune(int x,int y,Plateau& G)
 {
-	if(G.get_gcase()[x][y] != nullptr && G.get_gcase()[x][y]->get_couleur() == "Yellow")
+	if(G.get_m_plateau()[x][y] != nullptr && G.get_m_plateau()[x][y]->get_m_couleur() == "Yellow")
 	{
 		return true;
 	}
 	return false;
 }
-bool Joueur::jouer_tour(int x, int y,int nx,int ny, Grille & G)
+bool Joueur::jouerTour(int x, int y,int nx,int ny, Plateau & G)
 {
 	if(a_le_tour)
 	{
-	   if(choisir_pion_jaune(x,y,G))
+	   if(choisirPionJaune(x,y,G))
 	   {
 	     Pion* q = G.sauter(x,y,nx,ny);
 	     //ici q represente le pion capturé(sauté)
 	     if(q!=  nullptr)//c'est à dire qu'il a sauté q
 	     {
-	       pion_capturer.push_back(q);
-	       score = score + q->get_valeur();
-	       //on retire apres le pion capturé de la grille
-	       G.retirer(q->get_position_x_y().first, q->get_position_x_y().second);
+	       m_pionCapturer.push_back(q);
+	       m_score = m_score + q->get_m_valeur();
+	       //on retire apres le pion capturé de la Plateau
+	       G.retirer(q->get_m_position().first, q->get_m_position().second);
 	       
 	     }
 	   }

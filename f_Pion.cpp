@@ -1,19 +1,19 @@
 #include<iostream>
-#include "Pion.hpp"
+#include "f_Pion.hpp"
 #include<utility>
 #include<string>
 
 using namespace std;
 
 
-Pion::Pion(string c,pair<int,int> p, int v):couleur{c},position_x_y{p},valeur{v}{};
+Pion::Pion(string c,pair<int,int> p, int v):m_couleur{c},m_position{p},m_valeur{v}{};
 
 Pion::~Pion(){}
 
-const string Pion::get_couleur() const{return couleur;}
+const string Pion::get_m_couleur() const{return m_couleur;}
 
-pair<int,int> Pion::get_position_x_y() const{return position_x_y;}
+pair<int,int> Pion::get_m_position() const{return m_position;}
 
-const int Pion::get_valeur() const{return valeur;}
+const int Pion::get_m_valeur() const{return m_valeur;}
 
-void Pion::deplacer_pion(int nx, int ny){position_x_y = {nx,ny};}
+void Pion::deplacer_pion(int nx, int ny){m_position = {nx,ny};}
