@@ -1,0 +1,68 @@
+for(int i =0;i<P.get_taille();i += 2)
+	   {
+	      for(int j =0;j<P.get_taille();j += 2)
+	        {
+	          // Créer un carré 
+		    RectangleShape square(Vector2f(20, 20));
+		    square.setFillColor(Color(139, 69, 19));
+		    square.setPosition((i/2)*20+((i/2)*60), (j/2)*20+((j/2)*60));
+		    square.setOutlineThickness(2); // Épaisseur de la bordure
+    		    square.setOutlineColor(Color::Black); // Couleur de la bordure
+                    window.draw(square);
+		}
+	}
+	
+	// Dessiner les cases occupées par les barrières 
+	
+       for(int i =0;i<P.get_taille();i += 2)
+	   {
+	   	int l = 0;
+	      for(int j =1;j<P.get_taille();j += 2)
+	        {
+	          l++;
+	          // Créer un carré 
+		    RectangleShape square(Vector2f(20, 60));
+		    square.setFillColor(Color(139, 69, 19));
+		    square.setPosition((i/2)*20 + (i/2)*60, l*20+((l-1)*60));
+		    square.setOutlineThickness(2); // Épaisseur de la bordure
+    		    square.setOutlineColor(Color::Black); // Couleur de la bordure
+                    window.draw(square);
+		}
+	}
+	
+	// Dessiner les cases occupées par les barrières 
+	int k=0;
+        for(int i =1;i<P.get_taille();i += 2)
+	   {
+	      k++;
+	      for(int j =0;j<P.get_taille();j += 2)
+	        {
+	          // Créer un carré 
+		    RectangleShape square(Vector2f(60, 20));
+		    square.setFillColor(Color(139, 69, 19));
+		    square.setPosition((k*20) + (k-1)*60, (j/2)*20+((j/2)*60));
+		    square.setOutlineThickness(2); // Épaisseur de la bordure
+    		    square.setOutlineColor(Color::Black); // Couleur de la bordure
+                    window.draw(square);
+		}
+	}
+	
+	// Dessiner les cases occupées par les barrières 
+	int m = 0;
+        for(int i =1;i<P.get_taille();i += 2)
+	   {
+	      int n = 0;
+	      m++;
+	      for(int j =1;j<P.get_taille();j += 2)
+	        {
+	           n++;
+	          // Créer un carré 
+		    RectangleShape square(Vector2f(60, 60));
+		    square.setFillColor(Color(139, 69, 19));
+		    square.setPosition((m*20) + (m-1)*60, (n*20) + (n-1)*60);
+		    square.setOutlineThickness(2); // Épaisseur de la bordure
+    		    square.setOutlineColor(Color::Black); // Couleur de la bordure
+                    window.draw(square);
+		}
+	}     comment recuperer la position de ces cases sur la grille
+
