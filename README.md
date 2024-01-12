@@ -6,3 +6,8 @@ développement de trois  jeux :
 Jeux 1 Butin 
 Jeux 2 Dames
 Jeux 3 Safari
+akefile:31: avertissement : surchargement de la recette pour la cible « JeuDame »
+Makefile:28: avertissement : ancienne recette ignorée pour la cible « JeuDame »
+g++ -Wall --std=c++11  -c JoueurButin.cpp
+g++ -Wall --std=c++11  -c -lsfml-graphics -lsfml-window -lsfml-system JeuDame.cpp
+g++ -Wall --std=c++11  -o JeuButin JeuButin.o PlateauButin.o PieceButin.o JoueurButin.o Plateau.o Piece.o -lsfml-graphics -lsfml-window -lsfml-system
