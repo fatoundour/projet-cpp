@@ -1,64 +1,27 @@
 #include<iostream>
 #include"Joueur.hpp"
-#include"Pion.hpp"
-#include"Grille.hpp"
+#include"Piece.hpp"
+#include"Plateau.hpp"
 #include<vector>
 #include<string>
 
 using namespace std;
 
-Joueur::Joueur(const string n,int s,bool alt):nom{n},score{s},a_le_tour{alt}{}; 
-
-Joueur::~Joueur()
+Joueur::Joueur(const string n, int s):m_nom{n}
 {
-	for(Pion *e: pion_capturer) delete e;
-}
+	a_le_tour = false;
+}; 
 
-bool Joueur::get_a_le_tour()const{return a_le_tour;}
 
-const string Joueur::get_nom()const{return nom;}
+const string Joueur::get_m_nom()const{return m_nom;}
 
-int Joueur::get_score()const{return score;}
-
-vector<Pion*> Joueur::get_pion_capturer()const{return pion_capturer;}
-
-Pion * choisir_pion_jaune(Pion &p,Grille& G)
-{
-	pair<int,int> c = p.get_position_x_y();
-	int x = c.first, y = c.second;
-	if(p.get_couleur() == "Yellow" && x < G.get_largeur() && y < G.get_hauteur() && x>=0 && y>=0)
-	{
-		return &p;
-	}
-	return nullptr;
-}
-void Joueur::jouer_tour(Pion &pi,int nx,int ny, Grille & G)
+bool Joueur::jouerTour(int x, int y,int nx,int ny, Plateau &G)
 {
 	if(a_le_tour)
 	{
-	   Pion * q ;
-	   if(choisir_pion_jaune(pi,G) != nullptr)
-	   {
-	     pair<int,int> c = pi.get_position_x_y();
-	     int x = c.first, y = c.second;
-	     q = G.sauter(x,y,nx,ny);
-	     //ici q represente le pion capturé(sauté)
-	     if(q!=  nullptr)
-	     {
-	       pion_capturer.push_back(q);
-	       //on retire apres le pion capturé de la grille
-	       G.retirer(q->get_position_x_y().first, q->get_position_x_y().second);
-	       
-	     }
-	   }
+        G.deplacer(x, y, nx, ny);
 	 }
-}
-  	
-int Joueur::calcule_scoref()
-{
-	int s = 0;
-	for(Pion * e : pion_capturer) s = s + e->get_valeur();
-  	return s; 
+	 return false;
 }
   	
   	
